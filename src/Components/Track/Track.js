@@ -28,7 +28,6 @@ export class Track extends Component {
     return (
       <div className="Track">
         <div className="Track-information">
-        {console.log(this.props.track.name, this.props.track.id)}
           <h3>{this.props.track.name}</h3>
           <p>{this.props.track.artist} | {this.props.track.album}</p>
         </div>
