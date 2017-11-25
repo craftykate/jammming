@@ -34,6 +34,14 @@ class App extends Component {
           }
         ]
       };
+      this.addTrack = this.addTrack.bind(this);
+  }
+
+  addTrack(track) {
+    //This is supposed to have an "if" statement to see if track.id is already in playlist, but playlist tracks don't have id's yet... TOFIX
+    this.setState({
+      playlistTracks: [...this.state.playlistTracks, track]
+    });
   }
 
   render() {
@@ -43,7 +51,7 @@ class App extends Component {
         <div className="App">
           <SearchBar />
           <div className="App-playlist">
-            <SearchResults searchResults={this.state.searchResults} />
+            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
             <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}/>
           </div>
         </div>
