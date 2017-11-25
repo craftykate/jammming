@@ -43,10 +43,11 @@ class App extends Component {
   }
 
   addTrack(track) {
-    //This is supposed to have an "if" statement to see if track.id is already in playlist, but playlist tracks don't have id's yet... TOFIX
-    this.setState({
-      playlistTracks: [...this.state.playlistTracks, track]
-    });
+    if (!this.state.playlistTracks.filter(listItem => listItem.id === track.id).length > 0) {
+      this.setState({
+        playlistTracks: [...this.state.playlistTracks, track]
+      });
+    }
   }
 
   removeTrack(track) {
