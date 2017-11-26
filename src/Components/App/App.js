@@ -3,44 +3,15 @@ import './App.css';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
+import Spotify from '../../util/Spotify';
 
 class App extends Component {
   constructor(props) {
       super(props);
       this.state = {
-        searchResults: [
-          {
-            id: 1,
-            uri: 1234,
-            name: 'Song Name',
-            artist: 'Artist Name',
-            album: 'Album Name'
-          },
-          {
-            id: 2,
-            uri: 2345,
-            name: 'Ooh lala',
-            artist: 'Lady GooGoo',
-            album: `I'm so fancy`
-          }
-        ],
+        searchResults: [],
         playlistName: '',
-        playlistTracks: [
-          {
-            id: 3,
-            uri: 3456,
-            name: 'A song I like',
-            artist: 'Artist #1',
-            album: 'Album #1'
-          },
-          {
-            id: 4,
-            uri: 4567,
-            name: 'Anotha song I like',
-            artist: 'Artist #2',
-            album: 'Album #2'
-          }
-        ]
+        playlistTracks: []
       };
       this.addTrack = this.addTrack.bind(this);
       this.removeTrack = this.removeTrack.bind(this);
@@ -80,7 +51,11 @@ class App extends Component {
   }
 
   search(searchTerm) {
-    console.log(searchTerm);
+    Spotify.search(searchTerm).then(tracks => {
+      this.setState({
+        searchResults: tracks
+      });
+    });
   }
 
   render() {

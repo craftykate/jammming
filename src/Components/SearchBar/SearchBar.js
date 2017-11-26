@@ -8,6 +8,7 @@ export class SearchBar extends Component {
       searchTerm: ''
     }
     this.handleTermChange = this.handleTermChange.bind(this);
+    this.search = this.search.bind(this);
   }
 
   handleTermChange(e) {
@@ -24,7 +25,7 @@ export class SearchBar extends Component {
     return (
       <div className="SearchBar">
         <input placeholder="Enter A Song, Album, or Artist" onChange={this.handleTermChange}/>
-        <a>SEARCH</a>
+        <a onClick={this.search}>SEARCH</a>
       </div>
     );
   }
