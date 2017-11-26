@@ -1,7 +1,8 @@
 import {secret} from './secret';
 
 const clientId = secret.clientId;
-const redirectURI = "http://localhost:3000/";
+//const redirectURI = "http://localhost:3000/";
+const redirectURI = "http://katem-jammming.surge.sh/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
 let accessToken = '';
 let userInfo;
