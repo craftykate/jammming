@@ -3,9 +3,9 @@ import {secret} from './secret';
 const clientId = secret.clientId;
 const redirectURI = "http://localhost:3000/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
+let accessToken = '';
 let userInfo;
 let playlistID;
-let accessToken = '';
 let expires_in;
 
 
@@ -20,6 +20,7 @@ let Spotify = {
       window.setTimeout(() => accessToken = '', expires_in * 1000);
       window.history.pushState('Access Token', null, '/');
       console.log(`AccessToken retrieved`);
+      return accessToken;
     } else {
       console.log(`Crap`);
       window.location = (`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private&redirect_uri=${redirectURI}`);
@@ -35,7 +36,6 @@ let Spotify = {
         return response.json();
       }
     }).then(jsonResponse => {
-      console.log(jsonResponse);
       if (jsonResponse) {
         return jsonResponse.tracks.items.map(track => {
           return {
@@ -70,7 +70,6 @@ let Spotify = {
             return response.json();
           }
         }).then(jsonResponse => {
-          console.log(jsonResponse);
           playlistID = jsonResponse.id;
         }).then(() =>
           fetch(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${playlistID}/tracks`, {
@@ -84,7 +83,6 @@ let Spotify = {
               return response.json();
             }
           }).then(jsonResponse => {
-            console.log(jsonResponse);
           })
         )
       );
