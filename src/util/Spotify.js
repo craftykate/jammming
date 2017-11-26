@@ -1,8 +1,8 @@
 import {secret} from './secret';
 
 const clientId = secret.clientId;
-//const redirectURI = "http://localhost:3000/";
-const redirectURI = "http://katem-jammming.surge.sh/";
+const redirectURI = "http://localhost:3000/";
+//const redirectURI = "http://katem-jammming.surge.sh/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
 let accessToken = '';
 let userInfo;
@@ -11,19 +11,25 @@ let expires_in;
 
 
 let Spotify = {
+
+  // get accesstoken from variable or url
+  // if no accesstoken, refresh page
+  // THIS CAN BE BETTER: Right now, if there's no accessToken, page will refresh
+  // and search term will be lost. An added feature could be to save search searchTerm
+  // then get accesstoken and resend searchterm
   getAccessToken() {
     if (accessToken) {
-      console.log(`AccessToken okay`);
+      //console.log(`AccessToken okay`);
       return accessToken;
     } else if (window.location.href.match(/access_token=([^&]*)/)) {
       accessToken = window.location.href.match(/access_token=([^&]*)/)[1];
       expires_in = window.location.href.match(/expires_in=([^&]*)/)[1];
       window.setTimeout(() => accessToken = '', expires_in * 1000);
       window.history.pushState('Access Token', null, '/');
-      console.log(`AccessToken retrieved`);
+      //console.log(`AccessToken retrieved`);
       return accessToken;
     } else {
-      console.log(`Crap`);
+      //console.log(`Crap`);
       window.location = (`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private&redirect_uri=${redirectURI}`);
     }
   }, // end getAccessToken()

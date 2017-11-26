@@ -37,7 +37,6 @@ export class Track extends Component {
           <h3>{this.props.track.name}</h3>
           <p>{this.props.track.artist} | {this.props.track.album}</p>
         </div>
-        // Choose + or - next to track info
         {this.addOrDelete()}
       </div>
     );
