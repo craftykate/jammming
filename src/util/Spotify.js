@@ -5,7 +5,7 @@ const redirectURI = "http://localhost:3000/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
 let userInfo;
 let playlistID;
-let accessToken;
+let accessToken = '';
 let expires_in;
 
 
@@ -54,7 +54,6 @@ let Spotify = {
 
   savePlaylist(playlistName, tracks) {
     if (playlistName && tracks.length > 0) {
-      console.log('Spotify.js will save playlist');
       const headers = {
         'Authorization': `Bearer ${this.getAccessToken()}`,
         'Content-Type': 'application/json'
@@ -90,7 +89,6 @@ let Spotify = {
         )
       );
     } else {
-      console.log('Spotify.js says playlist not saved');
       return;
     }
   }, // savePlaylist()
