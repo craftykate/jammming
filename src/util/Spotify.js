@@ -3,6 +3,8 @@ import {secret} from './secret';
 const clientId = secret.clientId;
 const redirectURI = "http://localhost:3000/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
+let userInfo;
+let playlistID;
 let accessToken;
 let expires_in;
 
@@ -34,7 +36,7 @@ let Spotify = {
       }
     }).then(jsonResponse => {
       console.log(jsonResponse);
-      if (jsonResponse.tracks) {
+      if (jsonResponse) {
         return jsonResponse.tracks.items.map(track => {
           return {
             id: track.id,
@@ -53,22 +55,58 @@ let Spotify = {
   savePlaylist(playlistName, tracks) {
     if (playlistName && tracks.length > 0) {
       console.log('Spotify.js will save playlist');
-      const headers = {Authorization: `Bearer ${this.getAccessToken()}`};
-      let userId = '';
-      fetch(`${CORSlink}https://api.spotify.com/v1/me`,{
-        headers: headers
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-      }).then(jsonResponse => {
-        userId = jsonResponse.id;
-      });
+      const headers = {
+        'Authorization': `Bearer ${this.getAccessToken()}`,
+        'Content-Type': 'application/json'
+      };
+      return this.getUserInfo().then(() =>
+        fetch(`https://api.spotify.com/v1/users/${userInfo.id}/playlists`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            name: playlistName
+          })
+        }).then(response => {
+          if(response.ok) {
+            return response.json();
+          }
+        }).then(jsonResponse => {
+          console.log(jsonResponse);
+          playlistID = jsonResponse.id;
+        }).then(() =>
+          fetch(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${playlistID}/tracks`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+              uris: tracks
+            })
+          }).then(response => {
+            if(response.ok) {
+              return response.json();
+            }
+          }).then(jsonResponse => {
+            console.log(jsonResponse);
+          })
+        )
+      );
     } else {
       console.log('Spotify.js says playlist not saved');
       return;
     }
-  }
+  }, // savePlaylist()
+
+  getUserInfo() {
+    const headers = {Authorization: `Bearer ${this.getAccessToken()}`};
+    return fetch(`${CORSlink}https://api.spotify.com/v1/me`,{
+      headers: headers
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+    }).then(jsonResponse => {
+      userInfo = jsonResponse;
+    })
+  }, // getUserInfo()
 };
 
 export default Spotify;
