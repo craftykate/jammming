@@ -5,9 +5,9 @@ const redirectURI = "http://localhost:3000/";
 //const redirectURI = "http://katem-jammming.surge.sh/";
 const CORSlink = 'https://cors-anywhere.herokuapp.com/';
 let accessToken = '';
+let expires_in;
 let userInfo;
 let playlistID;
-let expires_in;
 
 
 let Spotify = {
@@ -18,21 +18,25 @@ let Spotify = {
   // and search term will be lost. An added feature could be to save search searchTerm
   // then get accesstoken and resend searchterm
   getAccessToken() {
+    const checkToken = window.location.href.match(/access_token=([^&]*)/);
+
     if (accessToken) {
-      //console.log(`AccessToken okay`);
       return accessToken;
-    } else if (window.location.href.match(/access_token=([^&]*)/)) {
-      accessToken = window.location.href.match(/access_token=([^&]*)/)[1];
-      expires_in = window.location.href.match(/expires_in=([^&]*)/)[1];
-      window.setTimeout(() => accessToken = '', expires_in * 1000);
-      window.history.pushState('Access Token', null, '/');
-      //console.log(`AccessToken retrieved`);
+    } else if (checkToken) {
+      this.getTokenInfo();
       return accessToken;
     } else {
-      //console.log(`Crap`);
       window.location = (`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private&redirect_uri=${redirectURI}`);
     }
-  }, // end getAccessToken()
+  },
+
+  // Get token and epiration time
+  getTokenInfo() {
+    accessToken = window.location.href.match(/access_token=([^&]*)/)[1];
+    expires_in = window.location.href.match(/expires_in=([^&]*)/)[1];
+    window.setTimeout(() => accessToken = '', expires_in * 1000);
+    window.history.pushState('Access Token', null, '/');
+  },
 
   search(searchTerm) {
     const headers = {Authorization: `Bearer ${this.getAccessToken()}`};
