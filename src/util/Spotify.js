@@ -68,13 +68,10 @@ let Spotify = {
       .then(() =>
         // send user id and playlist name to create new playlist
         this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists`, JSON.stringify({name: playlistName}))
-        .then(jsonResponse => {
-          // get back new playlist's id and save
-          playlistID = jsonResponse.id;
-        })
-        .then(() =>
+        // new playlist info is returned and used as jsonResponse
+        .then((jsonResponse) =>
           // save tracks to correct playlist id
-          this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${playlistID}/tracks`, JSON.stringify({uris: tracks}))
+          this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${jsonResponse.id}/tracks`, JSON.stringify({uris: tracks}))
         )
       );
     } else {
