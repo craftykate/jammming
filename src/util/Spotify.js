@@ -99,18 +99,14 @@ let Spotify = {
     }
   }, // savePlaylist()
 
+  // get user info, store object in variable
   getUserInfo() {
-    const headers = {Authorization: `Bearer ${this.getAccessToken()}`};
-    return fetch(`${CORSlink}https://api.spotify.com/v1/me`,{
-      headers: headers
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-    }).then(jsonResponse => {
+    const link = `${CORSlink}https://api.spotify.com/v1/me`;
+
+    return this.fetchGET(link).then(jsonResponse => {
       userInfo = jsonResponse;
     })
-  }, // getUserInfo()
+  },
 
   // Reusable fetch code, returns json response
   fetchGET(link) {
