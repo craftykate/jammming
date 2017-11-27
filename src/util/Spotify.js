@@ -14,10 +14,10 @@ let Spotify = {
 
   // get accesstoken from variable or url
   // if no accesstoken, refresh page
-  // THIS CAN BE BETTER: Right now, if there's no accessToken, page will refresh
-  // and search term will be lost. An added feature could be to save search searchTerm
-  // then get accesstoken and resend searchterm
+  // THIS CAN BE BETTER: Right now, if there's no accessToken, page will refresh and search term will be lost. An added feature could be to save search searchTerm then get accesstoken and resend searchterm
+  // I plan to fix the above issue in the feature request project because it's super annoying
   getAccessToken() {
+    // check if url contains access token
     const checkToken = window.location.href.match(/access_token=([^&]*)/);
 
     if (accessToken) {
@@ -60,66 +60,66 @@ let Spotify = {
     });
   },
 
+  // Save playlist to Spotify if playlist contains tracks
   savePlaylist(playlistName, tracks) {
     if (playlistName && tracks.length > 0) {
-      const headers = {
-        'Authorization': `Bearer ${this.getAccessToken()}`,
-        'Content-Type': 'application/json'
-      };
-      return this.getUserInfo().then(() =>
-        fetch(`https://api.spotify.com/v1/users/${userInfo.id}/playlists`, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({
-            name: playlistName
-          })
-        }).then(response => {
-          if(response.ok) {
-            return response.json();
-          }
-        }).then(jsonResponse => {
+      // get userinfo for POST link
+      return this.getUserInfo()
+      .then(() =>
+        // send user id and playlist name to create new playlist
+        this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists`, JSON.stringify({name: playlistName}))
+        .then(jsonResponse => {
+          // get back new playlist's id and save
           playlistID = jsonResponse.id;
-        }).then(() =>
-          fetch(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${playlistID}/tracks`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({
-              uris: tracks
-            })
-          }).then(response => {
-            if(response.ok) {
-              return response.json();
-            }
-          }).then(jsonResponse => {
-          })
+        })
+        .then(() =>
+          // save tracks to correct playlist id
+          this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${playlistID}/tracks`, JSON.stringify({uris: tracks}))
         )
       );
     } else {
       return;
     }
-  }, // savePlaylist()
+  },
 
   // get user info, store object in variable
   getUserInfo() {
     const link = `${CORSlink}https://api.spotify.com/v1/me`;
-
     return this.fetchGET(link).then(jsonResponse => {
       userInfo = jsonResponse;
     })
   },
 
+  // Reusable fetch post code, returns json response
+  fetchPOST(link, fetchBody) {
+    const headers = this.getHeaders();
+    return fetch(link, {
+      method: 'POST',
+      headers: headers,
+      body: fetchBody
+    }).then(response => {
+      if(response.ok) {
+        return response.json();
+      }
+    })
+  },
+
   // Reusable fetch code, returns json response
   fetchGET(link) {
-    const headers = {
-      'Authorization': `Bearer ${this.getAccessToken()}`,
-      'Content-Type': 'application/json'
-    };
-
+    const headers = this.getHeaders();
     return fetch(link,{ headers: headers}).then(response => {
       if (response.ok) {
         return response.json();
       }
     });
+  },
+
+  // Refactoring the fuck out of this thing, yo
+  getHeaders() {
+    return {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
   }
 };
 
