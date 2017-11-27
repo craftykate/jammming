@@ -1,8 +1,8 @@
 import {secret} from './secret';
 
 const clientId = secret.clientId;
-const redirectURI = "http://localhost:3000/";
-//const redirectURI = "http://katem-jammming.surge.sh/";
+//const redirectURI = "http://localhost:3000/";
+const redirectURI = "http://katem-jammming.surge.sh/";
 let accessToken = '';
 let expires_in;
 let userInfo;
