@@ -3,11 +3,9 @@ import {secret} from './secret';
 const clientId = secret.clientId;
 const redirectURI = "http://localhost:3000/";
 //const redirectURI = "http://katem-jammming.surge.sh/";
-const CORSlink = 'https://cors-anywhere.herokuapp.com/';
 let accessToken = '';
 let expires_in;
 let userInfo;
-let playlistID;
 
 
 let Spotify = {
@@ -26,7 +24,7 @@ let Spotify = {
       this.getTokenInfo();
       return accessToken;
     } else {
-      window.location = (`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private&redirect_uri=${redirectURI}`);
+      window.location = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private&redirect_uri=${redirectURI}`;
     }
   },
 
@@ -41,7 +39,7 @@ let Spotify = {
   // Send searchTerm to Spotify and get tracks back
   // Format tracks into an array of formatted objects
   search(searchTerm) {
-    const link = `${CORSlink}https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
+    const link = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
 
     return this.fetchGET(link).then(jsonResponse => {
       if (jsonResponse) {
@@ -81,7 +79,7 @@ let Spotify = {
 
   // get user info, store object in variable
   getUserInfo() {
-    const link = `${CORSlink}https://api.spotify.com/v1/me`;
+    const link = `https://api.spotify.com/v1/me`;
     return this.fetchGET(link).then(jsonResponse => {
       userInfo = jsonResponse;
     })
@@ -101,7 +99,7 @@ let Spotify = {
     })
   },
 
-  // Reusable fetch code, returns json response
+  // Reusable fetch get code, returns json response
   fetchGET(link) {
     const headers = this.getHeaders();
     return fetch(link,{ headers: headers}).then(response => {
@@ -112,6 +110,7 @@ let Spotify = {
   },
 
   // Refactoring the fuck out of this thing, yo
+  // headers for fetch get/post
   getHeaders() {
     return {
       'Authorization': `Bearer ${this.getAccessToken()}`,
