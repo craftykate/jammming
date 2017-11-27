@@ -38,15 +38,12 @@ let Spotify = {
     window.history.pushState('Access Token', null, '/');
   },
 
+  // Send searchTerm to Spotify and get tracks back
+  // Format tracks into an array of formatted objects
   search(searchTerm) {
-    const headers = {Authorization: `Bearer ${this.getAccessToken()}`};
-    return fetch(`${CORSlink}https://api.spotify.com/v1/search?type=track&q=${searchTerm}`,{
-      headers: headers
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-    }).then(jsonResponse => {
+    const link = `${CORSlink}https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
+
+    return this.fetchGET(link).then(jsonResponse => {
       if (jsonResponse) {
         return jsonResponse.tracks.items.map(track => {
           return {
@@ -61,7 +58,7 @@ let Spotify = {
         return [];
       }
     });
-  }, // end search()
+  },
 
   savePlaylist(playlistName, tracks) {
     if (playlistName && tracks.length > 0) {
@@ -114,6 +111,20 @@ let Spotify = {
       userInfo = jsonResponse;
     })
   }, // getUserInfo()
+
+  // Reusable fetch code, returns json response
+  fetchGET(link) {
+    const headers = {
+      'Authorization': `Bearer ${this.getAccessToken()}`,
+      'Content-Type': 'application/json'
+    };
+
+    return fetch(link,{ headers: headers}).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+    });
+  }
 };
 
 export default Spotify;
