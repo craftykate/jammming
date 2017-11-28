@@ -1,1 +1,1 @@
-Project can be seen live at katem-jammming.surge.sh
+Project built for Codecademy class: Build Front-End Web Applications from Scratch
