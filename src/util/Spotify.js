@@ -3,6 +3,7 @@ import {secret} from './secret';
 const clientId = secret.clientId;
 const redirectURI = "http://localhost:3000/";
 //const redirectURI = "http://katem-jammming.surge.sh/";
+const spotifyLink = 'https://api.spotify.com/v1/';
 let accessToken = '';
 let expires_in;
 let userInfo;
@@ -39,7 +40,7 @@ let Spotify = {
   // Send searchTerm to Spotify and get tracks back
   // Format tracks into an array of formatted objects
   search(searchTerm) {
-    const link = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
+    const link = `${spotifyLink}search?type=track&q=${searchTerm}`;
 
     return this.fetchGET(link).then(jsonResponse => {
       if (jsonResponse) {
@@ -65,11 +66,11 @@ let Spotify = {
       return this.getUserInfo()
       .then(() =>
         // send user id and playlist name to create new playlist
-        this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists`, JSON.stringify({name: playlistName}))
+        this.fetchPOST(`${spotifyLink}users/${userInfo.id}/playlists`, JSON.stringify({name: playlistName}))
         // new playlist info is returned and used as jsonResponse
         .then((jsonResponse) =>
           // save tracks to correct playlist id
-          this.fetchPOST(`https://api.spotify.com/v1/users/${userInfo.id}/playlists/${jsonResponse.id}/tracks`, JSON.stringify({uris: tracks}))
+          this.fetchPOST(`${spotifyLink}users/${userInfo.id}/playlists/${jsonResponse.id}/tracks`, JSON.stringify({uris: tracks}))
         )
       );
     } else {
@@ -79,7 +80,7 @@ let Spotify = {
 
   // get user info, store object in variable
   getUserInfo() {
-    const link = `https://api.spotify.com/v1/me`;
+    const link = `${spotifyLink}me`;
     return this.fetchGET(link).then(jsonResponse => {
       userInfo = jsonResponse;
     })
