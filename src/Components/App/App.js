@@ -21,6 +21,17 @@ class App extends Component {
       this.search = this.search.bind(this);
   }
 
+  // If the component mounts, check to see if the url has the accessToken in it
+  // If so, that means the page was refreshed to grab the accessToken and the search wasn't carried through
+  // Rather than make the user enter their search term again,
+  // run the search again with the search term saved in the session storage
+  componentDidMount() {
+    const checkWindow = window.location.href.match(/access_token=([^&]*)/);
+    if (checkWindow !== null) {
+      this.search(sessionStorage.getItem("inputSearch"));
+    }
+  }
+
   // Add track to playlist if it's not already in it
   addTrack(track) {
     // Only add track to playlist if playlist doesn't already contain that track
@@ -62,6 +73,8 @@ class App extends Component {
 
   // Send search term to Spotify.search() which will return an array of tracks
   search(searchTerm) {
+    // save the search to session storage in case the page needs to get refreshed
+    sessionStorage.setItem("inputSearch", searchTerm);
     Spotify.search(searchTerm).then(tracks => {
       // Add array of tracks to this.state.searchResults and rerender
       this.setState({
