@@ -13,8 +13,6 @@ let Spotify = {
 
   // get accesstoken from variable or url
   // if no accesstoken, refresh page
-  // THIS CAN BE BETTER: Right now, if there's no accessToken, page will refresh and search term will be lost. An added feature could be to save search searchTerm then get accesstoken and resend searchterm
-  // I plan to fix the above issue in the feature request project because it's super annoying
   getAccessToken() {
     // check if url contains access token
     const checkToken = window.location.href.match(/access_token=([^&]*)/);
