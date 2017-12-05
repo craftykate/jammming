@@ -16,7 +16,7 @@ export class SearchBar extends Component {
   // If this is the case, the input value will erase which it doesn't do on subsequent searches
   // To maintain continuity, put the search term back into the input area
   componentDidMount() {
-    window.document.getElementById("searchInput").value=sessionStorage.getItem("inputTerm");
+    window.document.getElementById("searchInput").value=sessionStorage.getItem("inputSearch");
   }
 
   // update state of searchTerm with every keystroke
@@ -28,8 +28,6 @@ export class SearchBar extends Component {
 
   // Send search term to search() in App.js
   search() {
-    // save the search term to session storage in case page gets refreshed
-    sessionStorage.setItem("inputTerm", this.state.searchTerm);
     this.props.onSearch(this.state.searchTerm)
   }
 
